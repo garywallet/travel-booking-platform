@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="UTF-8">
+</head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --ink:#0a0e1a;--ink2:#3d4560;--ink3:#8892b0;
+    --sky:#0057ff;--sky2:#e8f0ff;--sky3:#003bb5;
+    --gold:#f5a623;--gold2:#fff8ec;
+    --green:#00c853;--green2:#e6faf0;
+    --red:#ff3d57;--surface:#ffffff;--bg:#f0f3fc;
+    --border:#dde3f5;--radius:16px;--shadow:0 4px 24px rgba(0,87,255,.10);
+  }
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden}
+
+  /* HERO */
+  .hero{background:linear-gradient(135deg,#0010a0 0%,#0057ff 55%,#00b4d8 100%);position:relative;overflow:hidden;padding:40px 40px 0}
+  .hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+  .hero-brand{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+  .hero-logo{width:42px;height:42px;background:white;border-radius:12px;display:flex;align-items:center;justify-content:center}
+  .hero-logo svg{width:24px;height:24px}
+  .hero-name{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white;letter-spacing:-0.5px}
+  .hero-tagline{font-size:11px;color:rgba(255,255,255,.6);letter-spacing:2px;text-transform:uppercase;margin-top:1px}
+  .hero-title{font-family:'Syne',sans-serif;font-size:42px;font-weight:800;color:white;line-height:1.1;margin-bottom:8px;letter-spacing:-1.5px}
+  .hero-sub{font-size:16px;color:rgba(255,255,255,.7);margin-bottom:32px;font-weight:300}
+  .hero-plane{position:absolute;right:40px;top:30px;opacity:.12;font-size:120px;transform:rotate(-20deg)}
+
+  /* SEARCH CARD */
+  .search-card{background:white;border-radius:24px 24px 0 0;padding:32px 36px;box-shadow:0 -8px 40px rgba(0,87,255,.15);position:relative;z-index:2;width:fit-content;}
+  .trip-tabs{display:flex;gap:4px;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:24px;width:fit-content}
+  .trip-tab{padding:8px 20px;border-radius:9px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--ink3);transition:all .2s}
+  .trip-tab.active{background:white;color:var(--sky);box-shadow:0 2px 8px rgba(0,87,255,.15)}
+
+  .search-row{display:grid;grid-template-columns:1fr auto 1fr 160px 160px 120px;gap:12px;align-items:end;margin-bottom:16px}
+  .field-group{display:flex;flex-direction:column;gap:6px}
+  .field-label{font-size:11px;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:1px}
+  .field-input{background:var(--bg);border:2px solid transparent;border-radius:12px;padding:14px 16px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;color:var(--ink);outline:none;transition:all .2s;width:100%}
+  .field-input:focus{border-color:var(--sky);background:white;box-shadow:0 0 0 4px rgba(0,87,255,.08)}
+  .field-input::placeholder{color:var(--ink3);font-weight:400}
+  .swap-btn{width:44px;height:44px;border-radius:50%;background:var(--sky2);border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-bottom:2px;flex-shrink:0}
+  .swap-btn:hover{background:var(--sky);color:white;transform:rotate(180deg)}
+  .swap-btn svg{width:16px;height:16px;fill:var(--sky)}
+  .swap-btn:hover svg{fill:white}
+  .search-btn{background:linear-gradient(135deg,#0057ff,#003bb5);color:white;border:none;border-radius:14px;padding:16px 28px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.5px;transition:all .2s;white-space:nowrap;width:fit-content}
+  .search-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,87,255,.35)}
+
+  .extras-row{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+  .extra-pill{display:flex;align-items:center;gap:6px;background:var(--bg);border-radius:20px;padding:6px 14px;font-size:13px;color:var(--ink2);cursor:pointer;border:2px solid transparent;transition:all .2s}
+  .extra-pill:hover,.extra-pill.active{border-color:var(--sky);background:var(--sky2);color:var(--sky)}
+  .extra-pill span{font-size:16px}
+
+  /* TABS NAV */
+  .main-content{padding:0 40px 40px;max-width:1400px;margin:0 auto}
+  .view-tabs{display:flex;gap:0;margin:28px 0 20px;border-bottom:2px solid var(--border)}
+  .view-tab{padding:12px 24px;font-size:14px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--ink3);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;display:flex;align-items:center;gap:8px}
+  .view-tab.active{color:var(--sky);border-bottom-color:var(--sky);font-weight:600}
+  .view-tab-icon{font-size:15px}
+
+  /* FILTERS BAR */
+  .filters-bar{display:flex;gap:10px;align-items:center;margin-bottom:20px;flex-wrap:wrap}
+  .filter-chip{padding:7px 16px;border-radius:20px;border:1.5px solid var(--border);font-size:13px;font-weight:500;cursor:pointer;background:white;color:var(--ink2);transition:all .2s;display:flex;align-items:center;gap:6px}
+  .filter-chip:hover{border-color:var(--sky);color:var(--sky)}
+  .filter-chip.active{background:var(--sky);color:white;border-color:var(--sky)}
+  .sort-select{margin-left:auto;padding:7px 16px;border-radius:20px;border:1.5px solid var(--border);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--ink2);background:white;cursor:pointer;outline:none}
+
+  /* PRICE CHART */
+  .price-chart-bar{background:white;border-radius:var(--radius);padding:20px 24px;margin-bottom:20px;border:1.5px solid var(--border)}
+  .chart-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  .bar-chart{display:flex;gap:3px;align-items:flex-end;height:60px}
+  .bar-col{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;cursor:pointer}
+  .bar{width:100%;background:var(--sky2);border-radius:4px 4px 0 0;transition:all .2s;min-height:4px;border:1.5px solid var(--border)}
+  .bar:hover,.bar.selected{background:var(--sky);border-color:var(--sky3)}
+  .bar-label{font-size:9px;color:var(--ink3);white-space:nowrap}
+  .bar-price{font-size:9px;font-weight:600;color:var(--sky)}
+
+  /* RESULTS */
+  .results-grid{display:flex;flex-direction:column;gap:12px}
+  .flight-card{background:white;border-radius:var(--radius);border:1.5px solid var(--border);padding:0;overflow:hidden;transition:all .25s;cursor:pointer}
+  .flight-card:hover{border-color:var(--sky);box-shadow:var(--shadow);transform:translateY(-1px)}
+  .flight-card.best{border-color:var(--sky);box-shadow:0 0 0 3px rgba(0,87,255,.08)}
+  .fc-badge{background:linear-gradient(90deg,#0057ff,#00b4d8);color:white;font-size:10px;font-weight:700;padding:5px 16px;letter-spacing:1px;text-transform:uppercase}
+  .fc-body{padding:20px 24px;display:grid;grid-template-columns:1fr auto 1fr auto 200px;gap:16px;align-items:center}
+  .fc-airline{display:flex;align-items:center;gap:12px}
+  .airline-dot{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:white}
+  .fc-times{text-align:center}
+  .fc-time{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--ink);line-height:1}
+  .fc-airport{font-size:12px;color:var(--ink3);margin-top:3px}
+  .fc-route{display:flex;flex-direction:column;align-items:center;gap:4px;padding:0 20px}
+  .fc-duration{font-size:12px;font-weight:600;color:var(--ink2)}
+  .fc-line{width:100%;height:2px;background:var(--border);border-radius:2px;position:relative}
+  .fc-line::before{content:'✈';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:0 6px;font-size:14px;color:var(--sky);line-height:1}
+  .fc-stops{font-size:11px;color:var(--ink3)}
+  .stops-direct{color:var(--green);font-weight:600}
+  .fc-price-area{text-align:right}
+  .fc-price{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--sky);line-height:1}
+  .fc-per{font-size:12px;color:var(--ink3);margin-top:2px}
+  .fc-book-btn{background:linear-gradient(135deg,#0057ff,#003bb5);color:white;border:none;border-radius:10px;padding:10px 20px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;width:100%;margin-top:8px;transition:all .2s}
+  .fc-book-btn:hover{opacity:.9;transform:scale(1.02)}
+  .fc-meta{display:flex;gap:12px;align-items:center;margin-top:4px;flex-wrap:wrap}
+  .fc-tag{font-size:11px;padding:3px 8px;border-radius:6px;font-weight:500}
+  .tag-green{background:var(--green2);color:#007c33}
+  .tag-gold{background:var(--gold2);color:#a06000}
+  .tag-blue{background:var(--sky2);color:var(--sky3)}
+
+  /* CALENDAR VIEW */
+  .calendar-view{display:none}
+  .calendar-view.active{display:block}
+  .list-view{display:block}
+  .list-view.hidden{display:none}
+  .cal-header{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px}
+  .cal-dayname{text-align:center;font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;padding:8px 0}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+  .cal-cell{background:white;border:1.5px solid var(--border);border-radius:10px;padding:10px 8px;min-height:70px;cursor:pointer;transition:all .2s;position:relative}
+  .cal-cell:hover{border-color:var(--sky);box-shadow:var(--shadow)}
+  .cal-cell.has-price{cursor:pointer}
+  .cal-cell.cheapest{border-color:var(--green);background:var(--green2)}
+  .cal-cell.selected{background:var(--sky);border-color:var(--sky3)}
+  .cal-cell.selected .cal-date,.cal-cell.selected .cal-price{color:white!important}
+  .cal-cell.empty{background:transparent;border-color:transparent;pointer-events:none}
+  .cal-date{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px}
+  .cal-price{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--sky)}
+  .cal-price.cheap{color:var(--green)}
+  .cal-price.exp{color:var(--red)}
+  .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+  .cal-nav-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s}
+  .cal-nav-btn:hover{background:var(--sky);border-color:var(--sky);color:white}
+  .cal-month{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--ink)}
+  .cal-legend{display:flex;gap:16px;margin-top:16px;font-size:12px}
+  .legend-item{display:flex;align-items:center;gap:6px;color:var(--ink3)}
+  .legend-dot{width:10px;height:10px;border-radius:3px}
+
+  /* SIDE PANEL */
+  .content-layout{display:grid;grid-template-columns:260px 1fr;gap:24px;align-items:start}
+  .side-panel{background:white;border-radius:var(--radius);border:1.5px solid var(--border);padding:20px;position:sticky;top:20px}
+  .sp-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--ink);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  .sp-section{margin-bottom:20px}
+  .sp-section-title{font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+  .price-range{width:100%;accent-color:var(--sky)}
+  .range-labels{display:flex;justify-content:space-between;font-size:12px;color:var(--ink3);margin-top:4px}
+  .cb-row{display:flex;align-items:center;gap:8px;padding:6px 0;cursor:pointer}
+  .cb-row input{accent-color:var(--sky);width:14px;height:14px}
+  .cb-label{font-size:13px;color:var(--ink2);flex:1}
+  .cb-count{font-size:12px;color:var(--ink3)}
+
+  /* STATS BAR */
+  .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+  .stat-card{background:white;border-radius:12px;border:1.5px solid var(--border);padding:14px 16px}
+  .stat-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--sky)}
+  .stat-lbl{font-size:11px;color:var(--ink3);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+
+  /* PULSE ANIM */
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+  .loading-bar{height:3px;background:linear-gradient(90deg,#0057ff,#00b4d8,#0057ff);background-size:200%;animation:shimmer 1.5s infinite;border-radius:2px;margin-bottom:16px}
+  @keyframes shimmer{0%{background-position:0%}100%{background-position:200%}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .fc-animated{animation:fadeUp .3s ease forwards}
+
+  .no-results{text-align:center;padding:40px;color:var(--ink3)}
+  .no-results-icon{font-size:48px;margin-bottom:12px}
+</style>
+<h2 class="sr-only">HolidayROBO Flight Search Engine - search flights, view prices by date</h2>
+
+<div class="hero">
+  <div class="hero-plane">✈</div>
+  <div style="max-width:1400px;margin:0 auto">
+    <div class="hero-brand">
+      <div class="hero-logo">
+        <svg viewBox="0 0 24 24" fill="#0057ff"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+      </div>
+      <div>
+        <div class="hero-name">HolidayROBO</div>
+        <div class="hero-tagline">Global OTA Engine</div>
+      </div>
+    </div>
+    <div class="hero-title">Find flights at<br>the perfect price</div>
+    <div class="hero-sub">Search 500+ airlines across 10,000+ routes in real-time</div>
+    <div class="search-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div class="trip-tabs">
+          <button class="trip-tab active" onclick="setTripType(this,'return')">Return</button>
+          <button class="trip-tab" onclick="setTripType(this,'oneway')">One-way</button>
+          <button class="trip-tab" onclick="setTripType(this,'multi')">Multi-city</button>
+        </div>
+        <div style="display:flex;gap:12px">
+          <div class="extra-pill active" onclick="this.classList.toggle('active')"><span>🧳</span>1 Adult</div>
+          <div class="extra-pill" onclick="this.classList.toggle('active')"><span>💺</span>Economy</div>
+          <div class="extra-pill" onclick="this.classList.toggle('active')"><span>🎒</span>Cabin bag only</div>
+        </div>
+      </div>
+      <div class="search-row">
+        <div class="field-group">
+          <div class="field-label">From</div>
+          <input class="field-input" id="origin" placeholder="City or airport" value="London (LHR)">
+        </div>
+        <button class="swap-btn" onclick="swapRoutes()" title="Swap airports">
+          <svg viewBox="0 0 24 24"><path d="M16 17H5v-2l-4 3 4 3v-2h13v-4h-2v2zM3 7h11v2l4-3-4-3v2H3v4h2V7z"/></svg>
+        </button>
+        <div class="field-group">
+          <div class="field-label">To</div>
+          <input class="field-input" id="dest" placeholder="City or airport" value="Dubai (DXB)">
+        </div>
+        <div class="field-group">
+          <div class="field-label">Depart</div>
+          <input class="field-input" id="depart" type="date" value="2026-07-15">
+        </div>
+        <div class="field-group" id="return-field">
+          <div class="field-label">Return</div>
+          <input class="field-input" id="return" type="date" value="2026-07-22">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div class="field-label" style="opacity:0">Search</div>
+          <button class="search-btn" onclick="runSearch()">SEARCH FLIGHTS</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main-content">
+  <div id="loading-bar" class="loading-bar" style="display:none"></div>
+  <div class="view-tabs">
+    <button class="view-tab active" onclick="switchView('list',this)"><span class="view-tab-icon">☰</span>Results</button>
+    <button class="view-tab" onclick="switchView('calendar',this)"><span class="view-tab-icon">📅</span>Price Calendar</button>
+    <button class="view-tab" onclick="switchView('chart',this)"><span class="view-tab-icon">📊</span>Price Trends</button>
+    <div style="margin-left:auto;font-size:13px;color:var(--ink3);display:flex;align-items:center;gap:6px">
+      <span id="result-count">0 flights found</span>
+    </div>
+  </div>
+
+  <div id="list-view" class="list-view">
+    <div class="stats-bar" id="stats-bar" style="display:none">
+      <div class="stat-card"><div class="stat-val" id="stat-cheapest">—</div><div class="stat-lbl">Cheapest</div></div>
+      <div class="stat-card"><div class="stat-val" id="stat-fastest">—</div><div class="stat-lbl">Fastest</div></div>
+      <div class="stat-card"><div class="stat-val" id="stat-avg">—</div><div class="stat-lbl">Avg price</div></div>
+      <div class="stat-card"><div class="stat-val" id="stat-airlines">—</div><div class="stat-lbl">Airlines</div></div>
+    </div>
+
+    <div id="price-chart-bar" class="price-chart-bar" style="display:none">
+      <div class="chart-title">📈 Price by departure date — next 30 days</div>
+      <div class="bar-chart" id="bar-chart"></div>
+    </div>
+
+    <div class="content-layout">
+      <div class="side-panel">
+        <div class="sp-title">🎯 Filter results</div>
+        <div class="sp-section">
+          <div class="sp-section-title">Max price (£)</div>
+          <input type="range" class="price-range" min="100" max="2000" value="2000" id="price-slider" oninput="filterByPrice(this.value)">
+          <div class="range-labels"><span>£100</span><span id="price-max-lbl">£2,000</span></div>
+        </div>
+        <div class="sp-section">
+          <div class="sp-section-title">Stops</div>
+          <label class="cb-row"><input type="checkbox" checked onchange="applyFilters()"><span class="cb-label">Direct</span><span class="cb-count">3</span></label>
+          <label class="cb-row"><input type="checkbox" checked onchange="applyFilters()"><span class="cb-label">1 stop</span><span class="cb-count">4</span></label>
+          <label class="cb-row"><input type="checkbox" onchange="applyFilters()"><span class="cb-label">2+ stops</span><span class="cb-count">2</span></label>
+        </div>
+        <div class="sp-section">
+          <div class="sp-section-title">Departure time</div>
+          <label class="cb-row"><input type="checkbox" checked onchange="applyFilters()"><span class="cb-label">Morning (06–12)</span></label>
+          <label class="cb-row"><input type="checkbox" checked onchange="applyFilters()"><span class="cb-label">Afternoon (12–18)</span></label>
+          <label class="cb-row"><input type="checkbox" checked onchange="applyFilters()"><span class="cb-label">Evening (18–00)</span></label>
+          <label class="cb-row"><input type="checkbox" onchange="applyFilters()"><span class="cb-label">Night (00–06)</span></label>
+        </div>
+        <div class="sp-section">
+          <div class="sp-section-title">Airlines</div>
+          <label class="cb-row"><input type="checkbox" checked onchange="applyFilters()"><span class="cb-label">Emirates</span></label>
+          <label class="cb-row"><input type="checkbox" checked onchange="applyFilters()"><span class="cb-label">British Airways</span></label>
+          <label class="cb-row"><input type="checkbox" checked onchange="applyFilters()"><span class="cb-label">Flydubai</span></label>
+          <label class="cb-row"><input type="checkbox" checked onchange="applyFilters()"><span class="cb-label">Virgin Atlantic</span></label>
+          <label class="cb-row"><input type="checkbox" checked onchange="applyFilters()"><span class="cb-label">Qatar Airways</span></label>
+        </div>
+      </div>
+
+      <div>
+        <div class="filters-bar">
+          <button class="filter-chip active" onclick="sortBy('best',this)">⚡ Best</button>
+          <button class="filter-chip" onclick="sortBy('cheapest',this)">💰 Cheapest</button>
+          <button class="filter-chip" onclick="sortBy('fastest',this)">⚡ Fastest</button>
+          <button class="filter-chip" onclick="sortBy('direct',this)">✈ Direct only</button>
+        </div>
+        <div class="results-grid" id="results-grid">
+          <div class="no-results"><div class="no-results-icon">✈️</div><p>Enter your route above and hit Search to find flights</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="calendar-view" class="calendar-view">
+    <div class="cal-nav">
+      <button class="cal-nav-btn" onclick="calNav(-1)">←</button>
+      <div class="cal-month" id="cal-month-title">July 2026</div>
+      <button class="cal-nav-btn" onclick="calNav(1)">→</button>
+    </div>
+    <div class="cal-header">
+      <div class="cal-dayname">Mon</div><div class="cal-dayname">Tue</div><div class="cal-dayname">Wed</div>
+      <div class="cal-dayname">Thu</div><div class="cal-dayname">Fri</div><div class="cal-dayname">Sat</div><div class="cal-dayname">Sun</div>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+    <div class="cal-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Cheapest dates</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--sky)"></div>Selected</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Expensive</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--border)"></div>No data</div>
+    </div>
+  </div>
+
+  <div id="chart-view" style="display:none">
+    <div style="background:white;border-radius:var(--radius);border:1.5px solid var(--border);padding:24px">
+      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px">LHR → DXB — 90-day price trend</div>
+      <div style="font-size:13px;color:var(--ink3);margin-bottom:20px">Historical fare data. Shaded area = price range. Line = median.</div>
+      <canvas id="trend-canvas" height="200" style="width:100%"></canvas>
+    </div>
+  </div>
+</div>
+
+<script>
+const FLIGHTS=[
+  {id:1,airline:"Emirates",code:"EK",color:"#d71920",depTime:"08:20",arrTime:"19:45",dep:"LHR",arr:"DXB",duration:"6h 55m",stops:0,stopLabel:"Direct",price:384,currency:"£",bag:"23kg included",refund:true,tags:["Cheapest","Fastest"],best:true},
+  {id:2,airline:"British Airways",code:"BA",color:"#075aaa",depTime:"10:10",arrTime:"21:30",dep:"LHR",arr:"DXB",duration:"7h 20m",stops:0,stopLabel:"Direct",price:412,currency:"£",bag:"23kg included",refund:true,tags:["Flexible"],best:false},
+  {id:3,airline:"Flydubai",code:"FZ",color:"#e5272d",depTime:"14:45",arrTime:"01:10+1",dep:"LHR",arr:"DXB",duration:"7h 25m",stops:1,stopLabel:"1 stop via BHX",price:279,currency:"£",bag:"Cabin bag only",refund:false,tags:["Budget pick"],best:false},
+  {id:4,airline:"Virgin Atlantic",code:"VS",color:"#e11b22",depTime:"16:30",arrTime:"04:15+1",dep:"LHR",arr:"DXB",duration:"7h 45m",stops:0,stopLabel:"Direct",price:455,currency:"£",bag:"23kg included",refund:true,tags:["Popular"],best:false},
+  {id:5,airline:"Qatar Airways",code:"QR",color:"#5c0632",depTime:"20:00",arrTime:"07:20+1",dep:"LHR",arr:"DXB",duration:"8h 20m",stops:1,stopLabel:"1 stop via DOH",price:348,currency:"£",bag:"30kg included",refund:true,tags:["Great baggage"],best:false},
+  {id:6,airline:"Etihad",code:"EY",color:"#bd8b13",depTime:"22:30",arrTime:"10:05+1",dep:"LHR",arr:"DXB",duration:"8h 35m",stops:1,stopLabel:"1 stop via AUH",price:319,currency:"£",bag:"30kg included",refund:true,tags:["Good value"],best:false},
+  {id:7,airline:"Air Arabia",code:"G9",color:"#e40046",depTime:"06:15",arrTime:"17:30",dep:"LHR",arr:"DXB",duration:"8h 15m",stops:1,stopLabel:"1 stop via SHJ",price:199,currency:"£",bag:"Cabin only",refund:false,tags:["Lowest price"],best:false},
+];
+
+let currentFlights=[...FLIGHTS];
+let calMonth=6,calYear=2026,selectedDate=null;
+
+function setTripType(el,type){
+  document.querySelectorAll('.trip-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('return-field').style.opacity=type==='oneway'?'0.3':'1';
+}
+
+function swapRoutes(){
+  const o=document.getElementById('origin'),d=document.getElementById('dest');
+  [o.value,d.value]=[d.value,o.value];
+  o.style.transform='scale(1.05)';d.style.transform='scale(1.05)';
+  setTimeout(()=>{o.style.transform='';d.style.transform='';},200);
+}
+
+function runSearch(){
+  document.getElementById('loading-bar').style.display='block';
+  document.getElementById('results-grid').innerHTML='<div class="no-results"><div class="no-results-icon" style="animation:pulse 1s infinite">✈️</div><p>Searching 500+ airlines...</p></div>';
+  setTimeout(()=>{
+    document.getElementById('loading-bar').style.display='none';
+    renderResults(FLIGHTS);
+    renderBarChart();
+    renderCalendar();
+    renderTrendChart();
+  },1400);
+}
+
+function renderResults(flights){
+  const grid=document.getElementById('results-grid');
+  grid.innerHTML='';
+  document.getElementById('result-count').textContent=`${flights.length} flights found`;
+  document.getElementById('stats-bar').style.display='grid';
+  document.getElementById('price-chart-bar').style.display='block';
+  const prices=flights.map(f=>f.price);
+  const durations=flights.map(f=>parseInt(f.duration));
+  document.getElementById('stat-cheapest').textContent='£'+Math.min(...prices);
+  document.getElementById('stat-fastest').textContent=flights.sort((a,b)=>parseInt(a.duration)-parseInt(b.duration))[0].duration;
+  document.getElementById('stat-avg').textContent='£'+Math.round(prices.reduce((a,b)=>a+b,0)/prices.length);
+  document.getElementById('stat-airlines').textContent=[...new Set(flights.map(f=>f.airline))].length;
+  currentFlights.forEach((f,i)=>{
+    const card=document.createElement('div');
+    card.className='flight-card fc-animated'+(f.best?' best':'');
+    card.style.animationDelay=`${i*80}ms`;
+    const tagHtml=f.tags.map(t=>`<span class="fc-tag ${t.includes('Cheapest')||t.includes('Budget')||t.includes('Lowest')?'tag-green':t.includes('Flex')?'tag-gold':'tag-blue'}">${t}</span>`).join('');
+    card.innerHTML=`
+      ${f.best?'<div class="fc-badge">⚡ Best value for your search</div>':''}
+      <div class="fc-body">
+        <div class="fc-airline">
+          <div class="airline-dot" style="background:${f.color}">${f.code}</div>
+          <div>
+            <div style="font-weight:600;font-size:14px">${f.airline}</div>
+            <div class="fc-meta">${tagHtml}</div>
+          </div>
+        </div>
+        <div class="fc-times"><div class="fc-time">${f.depTime}</div><div class="fc-airport">${f.dep}</div></div>
+        <div class="fc-route">
+          <div class="fc-duration">${f.duration}</div>
+          <div class="fc-line"></div>
+          <div class="fc-stops ${f.stops===0?'stops-direct':''}">${f.stopLabel}</div>
+        </div>
+        <div class="fc-times"><div class="fc-time">${f.arrTime}</div><div class="fc-airport">${f.arr}</div></div>
+        <div class="fc-price-area">
+          <div class="fc-price">${f.currency}${f.price}</div>
+          <div class="fc-per">${f.bag}</div>
+          <button class="fc-book-btn" onclick="bookFlight(${f.id})">Book now →</button>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function renderBarChart(){
+  const chart=document.getElementById('bar-chart');
+  chart.innerHTML='';
+  const basePrices=[320,380,290,450,410,370,310,480,340,360,280,420,395,355,300,440,385,345,295,465,415,375,315,490,350,370,285,430,405,365];
+  const days=['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30'];
+  const maxP=Math.max(...basePrices);
+  const minP=Math.min(...basePrices);
+  days.forEach((d,i)=>{
+    const pct=((basePrices[i]-minP)/(maxP-minP));
+    const h=8+pct*52;
+    const isMin=basePrices[i]===minP;
+    const col=document.createElement('div');
+    col.className='bar-col';
+    col.innerHTML=`<div class="bar ${isMin?'selected':''}" style="height:${h}px" title="Jul ${d}: £${basePrices[i]}"></div><div class="bar-label">Jul ${d}</div>`;
+    if(i%5!==0)col.querySelector('.bar-label').style.display='none';
+    chart.appendChild(col);
+  });
+}
+
+const calPrices={};
+function genCalPrices(month,year){
+  const key=`${year}-${month}`;
+  if(calPrices[key])return calPrices[key];
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const prices={};
+  for(let d=1;d<=daysInMonth;d++){
+    if(Math.random()>0.15){
+      prices[d]=Math.round(180+Math.random()*520);
+    }
+  }
+  calPrices[key]=prices;
+  return prices;
+}
+
+function renderCalendar(){
+  const grid=document.getElementById('cal-grid');
+  grid.innerHTML='';
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cal-month-title').textContent=`${months[calMonth]} ${calYear}`;
+  const firstDay=(new Date(calYear,calMonth,1).getDay()+6)%7;
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const prices=genCalPrices(calMonth,calYear);
+  const vals=Object.values(prices);
+  const minP=Math.min(...vals);
+  const maxP=Math.max(...vals);
+  const p33=minP+(maxP-minP)*0.33;
+  const p66=minP+(maxP-minP)*0.66;
+  for(let i=0;i<firstDay;i++){
+    const e=document.createElement('div');e.className='cal-cell empty';grid.appendChild(e);
+  }
+  for(let d=1;d<=daysInMonth;d++){
+    const cell=document.createElement('div');
+    const p=prices[d];
+    const isSelected=selectedDate===`${calYear}-${calMonth+1}-${d}`;
+    cell.className='cal-cell'+(p?' has-price':'')+(p&&p<=p33?' cheapest':'')+(isSelected?' selected':'');
+    let priceClass='';
+    if(p){priceClass=p<=p33?'cheap':p>=p66?'exp':'';}
+    cell.innerHTML=`<div class="cal-date">${d}</div>${p?`<div class="cal-price ${isSelected?'':priceClass}">£${p}</div>`:'<div style="font-size:11px;color:var(--ink3)">—</div>'}`;
+    if(p)cell.onclick=()=>{selectedDate=`${calYear}-${calMonth+1}-${d}`;renderCalendar();document.getElementById('depart').value=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;};
+    grid.appendChild(cell);
+  }
+}
+
+function calNav(dir){
+  calMonth+=dir;
+  if(calMonth>11){calMonth=0;calYear++;}
+  if(calMonth<0){calMonth=11;calYear--;}
+  renderCalendar();
+}
+
+function renderTrendChart(){
+  const canvas=document.getElementById('trend-canvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.offsetWidth||620;
+  canvas.height=200;
+  const W=canvas.width,H=canvas.height;
+  const pts=Array.from({length:90},(_,i)=>Math.round(250+Math.random()*300+Math.sin(i/8)*60));
+  const minV=Math.min(...pts),maxV=Math.max(...pts);
+  const sx=i=>i*(W-60)/89+30;
+  const sy=v=>H-30-(v-minV)/(maxV-minV)*(H-60);
+  ctx.clearRect(0,0,W,H);
+  ctx.strokeStyle='#dde3f5';ctx.lineWidth=1;
+  for(let y=0;y<=4;y++){
+    const yv=minV+(maxV-minV)*y/4;
+    const yp=sy(yv);
+    ctx.beginPath();ctx.moveTo(30,yp);ctx.lineTo(W-30,yp);ctx.stroke();
+    ctx.fillStyle='#8892b0';ctx.font='11px DM Sans';ctx.fillText('£'+Math.round(yv),0,yp+4);
+  }
+  ctx.beginPath();ctx.moveTo(sx(0),sy(pts[0]));
+  pts.forEach((_,i)=>{if(i>0)ctx.lineTo(sx(i),sy(pts[i]));});
+  ctx.strokeStyle='#0057ff';ctx.lineWidth=2.5;ctx.stroke();
+  const grad=ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0,'rgba(0,87,255,.15)');grad.addColorStop(1,'rgba(0,87,255,0)');
+  ctx.lineTo(sx(pts.length-1),H-30);ctx.lineTo(sx(0),H-30);ctx.closePath();
+  ctx.fillStyle=grad;ctx.fill();
+  const minI=pts.indexOf(minV);
+  ctx.beginPath();ctx.arc(sx(minI),sy(minV),5,0,Math.PI*2);
+  ctx.fillStyle='#00c853';ctx.fill();
+  ctx.fillStyle='#00c853';ctx.font='bold 11px DM Sans';ctx.fillText('Best £'+minV,sx(minI)-10,sy(minV)-10);
+}
+
+function switchView(view,el){
+  document.querySelectorAll('.view-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('list-view').style.display=view==='list'?'block':'none';
+  document.getElementById('calendar-view').style.display=view==='calendar'?'block':'none';
+  document.getElementById('chart-view').style.display=view==='chart'?'block':'none';
+  if(view==='calendar')renderCalendar();
+  if(view==='chart'){setTimeout(renderTrendChart,50);}
+}
+
+function sortBy(type,el){
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  let sorted=[...currentFlights];
+  if(type==='cheapest')sorted.sort((a,b)=>a.price-b.price);
+  if(type==='fastest')sorted.sort((a,b)=>parseInt(a.duration)-parseInt(b.duration));
+  if(type==='direct')sorted=sorted.filter(f=>f.stops===0);
+  if(type==='best'){sorted=FLIGHTS;}
+  currentFlights=sorted;
+  if(document.getElementById('results-grid').children.length>1||document.getElementById('results-grid').innerHTML.includes('fc-card')){
+    renderResults(sorted);
+  }
+}
+
+function filterByPrice(val){
+  document.getElementById('price-max-lbl').textContent='£'+val;
+  currentFlights=FLIGHTS.filter(f=>f.price<=parseInt(val));
+  if(!document.getElementById('results-grid').querySelector('.no-results')){
+    renderResults(currentFlights);
+  }
+}
+
+function applyFilters(){}
+
+function bookFlight(id){
+  const f=FLIGHTS.find(x=>x.id===id);
+  sendPrompt(`I want to book the ${f.airline} flight from ${f.dep} to ${f.arr} for ${f.currency}${f.price}. Departure at ${f.depTime}. What are the next steps and what should I check before confirming?`);
+}
+
+renderCalendar();
+</script>
