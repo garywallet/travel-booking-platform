@@ -1,4 +1,3 @@
-```tsx
 'use client';
 
 import { useState } from 'react';
@@ -166,4 +165,3 @@ const inputStyle = {
   marginBottom: '15px',
   boxSizing: 'border-box' as const
 };
-```
